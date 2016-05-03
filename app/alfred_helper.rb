@@ -27,6 +27,9 @@ class AlfredHelper
     when 'push'
       command = 'git push'
       @arguments.delete_at(0)
+    when 'commit'
+      command = 'git commit'
+      @arguments.delete_at(0)
     when 'checkout'
       if @arguments[1].nil? || @arguments[1] == ''
         puts "I need a branch name to execute the 'checkout' command, Master"\
