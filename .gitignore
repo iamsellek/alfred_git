@@ -1,2 +1,4 @@
 config/repos.yaml
 config/config.yaml
+.idea
+.bundle
