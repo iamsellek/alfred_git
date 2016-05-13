@@ -1,4 +1,5 @@
 require 'YAML'
+require 'rainbow'
 
 class AlfredHelper
 
@@ -11,7 +12,10 @@ class AlfredHelper
     repos = repos_string_to_array(repo_locations)
 
     repos.each do |repo|
+      lines_pretty_print Rainbow("Repo #{repo}:").yellow
       bash(repo_locations[repo], command)
+
+      single_space
     end
   end
 
@@ -31,8 +35,9 @@ class AlfredHelper
       @arguments.delete_at(0)
     when 'checkout'
       if @arguments[1].nil? || @arguments[1] == ''
-        lines_pretty_print 'I need a branch name to execute the \'checkout\' command, Master'\
+        lines_pretty_print "I need a branch name to execute the #{command_name} command, Master"\
              ' Wayne.'
+
         abort
       end
 
@@ -40,6 +45,11 @@ class AlfredHelper
 
       @arguments.delete_at(0)
       @arguments.delete_at(0)
+    when 'branches' || 'branch'
+      command = 'git rev-parse --abbrev-ref HEAD'
+      @arguments.delete_at(0)
+    else
+        lines_pretty_print 'I do not recognize that command, Master Wayne.'
     end
 
     command
