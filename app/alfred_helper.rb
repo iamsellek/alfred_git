@@ -34,9 +34,9 @@ class AlfredHelper
       command = 'git push'
       @arguments.delete_at(0)
     when 'checkout'
-      if @arguments[1].nil? || @arguments[1] == ''
-        lines_pretty_print Rainbow("I need a branch name to execute the #{command_name} command, Master"\
-             ' Wayne.').red
+      if second_argument_missing?
+        lines_pretty_print Rainbow('I need a branch name to execute the \'checkout\' command, Master '\
+                                   'Wayne.').red
 
         abort
       end
@@ -45,6 +45,15 @@ class AlfredHelper
 
       @arguments.delete_at(0)
       @arguments.delete_at(0)
+    when 'commit'
+      if second_argument_missing?
+        lines_pretty_print Rainbow('I need a commit message to execute the \'commit\' command, Master '\
+                                   'Wayne.').red
+
+        abort
+      end
+
+      command = %Q[git commit -m "#{@arguments[1]}"]
     when 'branches', 'branch'
       command = 'git rev-parse --abbrev-ref HEAD'
       @arguments.delete_at(0)
@@ -68,6 +77,10 @@ class AlfredHelper
     else
       return @arguments
     end
+  end
+
+  def second_argument_missing?
+    @arguments[1].nil? || @arguments[1] == ''
   end
 
   def bash(directory, command)
