@@ -23,8 +23,8 @@ class AlfredHelper
     command = ''
 
     case @arguments[0]
-    when nil || ''
-      lines_pretty_print 'I need a command to run, Master Wayne.'
+    when nil, ''
+      lines_pretty_print Rainbow('I need a command to run, Master Wayne.').red
 
       abort
     when 'pull'
@@ -35,8 +35,8 @@ class AlfredHelper
       @arguments.delete_at(0)
     when 'checkout'
       if @arguments[1].nil? || @arguments[1] == ''
-        lines_pretty_print "I need a branch name to execute the #{command_name} command, Master"\
-             ' Wayne.'
+        lines_pretty_print Rainbow("I need a branch name to execute the #{command_name} command, Master"\
+             ' Wayne.').red
 
         abort
       end
@@ -45,11 +45,13 @@ class AlfredHelper
 
       @arguments.delete_at(0)
       @arguments.delete_at(0)
-    when 'branches' || 'branch'
+    when 'branches', 'branch'
       command = 'git rev-parse --abbrev-ref HEAD'
       @arguments.delete_at(0)
     else
-        lines_pretty_print 'I do not recognize that command, Master Wayne.'
+        lines_pretty_print Rainbow('I do not recognize that command, Master Wayne.').red
+
+        abort
     end
 
     command
@@ -57,8 +59,8 @@ class AlfredHelper
 
   # All other arguments are deleted before we get here, so this should be just the repo list.
   def repos_string_to_array(repo_locations)
-    if @arguments[0].nil? || @arguments[0] == ''
-      lines_pretty_print 'I need at least one repository to work with, Master Wayne.'
+    if @arguments[0].nil?|| @arguments[0] == ''
+      lines_pretty_print Rainbow('I need at least one repository to work with, Master Wayne.').red
 
       abort
     elsif @arguments[0] == 'all'
@@ -90,5 +92,11 @@ class AlfredHelper
 
   def double_space
     puts "\n\n"
+  end
+
+  def surround_by_double_space(string)
+    double_space
+    lines_pretty_print(string)
+    double_space
   end
 end
