@@ -1,8 +1,8 @@
 require 'YAML'
 require 'rainbow'
 
-module Alfred
-  class Alfred
+module AlfredGit
+  class AlfredGit
 
     def initialize
       set_app_directory
