@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require_relative 'alfred_helper'
+require 'alfred_git'
 
-helper = AlfredHelper.new
+helper = AlfredGit::AlfredGit.new
 
 helper.config if ARGV[0] == 'config'
 

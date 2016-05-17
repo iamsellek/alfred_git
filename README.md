@@ -1,4 +1,4 @@
-# Alfred
+# AlfredGit
 Helps you handle multiple git repos more quickly and easily.
 
 ## Longer Description
@@ -15,12 +15,12 @@ history very well). I...well, to be honest, I'm doing something a tad less
 monumental, but I am that man. A modern what's-his-name-you-know-the-guy-who-
 hated-math-and-invented-computers-if-that-story-is-even-real(-it's-not).
 
-Enter Alfred, named after a certain famous billionaire's butler. Alfred does
+Enter AlfredGit, named after a certain famous billionaire's butler. AlfredGit does
 those stupid menial typing tasks for you. Why? Because you're freaking Batman
 and Batman doesn't have time to sit there cd-ing into 12 different repo
 directories and issuing a `git pull` in every single one of them. He's too
-busy out there punching...uh...bugs and feature requests in the face (this
-analogy is falling apart pretty quick). So grab Alfred and say goodbye to
+busy out there punching...uh...bugs and...feature requests. In the face (this
+analogy is quickly falling apart). So grab AlfredGit and say goodbye to
 spending 20% of your day typing git commands in 140 different repos like a
 pleb. This, guys. This is the future.
 
@@ -40,13 +40,13 @@ changes based on what git command you need to run - you can't run a `git
 checkout` without a branch name, for instance) separated by spaces; the repos
 you want to work with *always* come last and will also be separated by spaces.
 
-Alfred comes packaged with the most common git commands built in, but also
+AlfredGit comes packaged with the most common git commands built in, but also
 allows you to send custom commands! If your first parameter doesn't match
 any of the built-in commands, the first parameter itself will be the command
 that is run! Simple! Think another command warrants being on this list?
 Email me and I'll consider adding it!
 
-And with that, we come to the built-in commands. Here are the Alfred commands
+And with that, we come to the built-in commands. Here are the AlfredGit commands
 followed by a description of what they run. Most of these should be intuitive.
 
 * `pull` - Runs a `git pull`
@@ -62,15 +62,15 @@ Here's a quick example of how it works!
 
 Want to pull repos 1, 2, and 3? Easy!
 
-`> alfred pull repo_1 repo_2 repo_3`
+`> alfred_git pull repo_1 repo_2 repo_3`
 
 What about pulling everything?
 
-`> alfred pull all`
+`> alfred_git pull all`
 
 How about checking out a branch on multiple repos at once?
 
-`> alfred checkout branch_name repo_1 repo_2`
+`> alfred_git checkout branch_name repo_1 repo_2`
 
 See? Intuitive! Simple! Batman!
 
