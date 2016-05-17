@@ -54,6 +54,9 @@ class AlfredHelper
       end
 
       command = %Q[git commit -m "#{@arguments[1]}"]
+    when 'status'
+      command = 'git status'
+      @arguments.delete_at(0)
     when 'branches', 'branch'
       command = 'git rev-parse --abbrev-ref HEAD'
       @arguments.delete_at(0)
