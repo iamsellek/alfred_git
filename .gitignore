@@ -1,5 +1,4 @@
-config/repos.yaml
-config/config.yaml
+lib/config.yaml
 .idea
 .bundle
 Gemfile.lock
