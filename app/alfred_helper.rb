@@ -61,9 +61,8 @@ class AlfredHelper
       command = 'git rev-parse --abbrev-ref HEAD'
       @arguments.delete_at(0)
     else
-        lines_pretty_print Rainbow('I do not recognize that command, Master Wayne.').red
-
-        abort
+      command = @arguments[0] # Allow users to send any command to all repos.
+      @arguments.delete_at(0)
     end
 
     command
