@@ -2,7 +2,8 @@
 Helps you handle multiple git repos more quickly and easily.
 
 ## Longer Description
-Guys. We live in 2016. Cars are out there driving *themselves*. We are *half a
+Guys. We live in 2016. When Marty visited the future, he now visited *last
+year.* Cars, guys. Cars are out there driving *themselves*. We are *half a
 century* removed from sending a man to another celestial body and without even
 blowing him up in the process. Why on Earth (heh), then, do I need to cd into
 every single repo I'm working with on a project and type individual git commands
