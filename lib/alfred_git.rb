@@ -6,9 +6,8 @@ module AlfredGit
 
     def initialize
       set_app_directory
+      config unless File.exists?("#{@app_directory}/lib/config.yaml")
       config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
-
-      config if config_yaml.nil? || !config_yaml
 
       @repo_locations = config_yaml['repos']
       @name = config_yaml['name'].nil? ? 'Wayne' : config_yaml['name']
@@ -103,14 +102,28 @@ module AlfredGit
 
       lines_pretty_print 'Thank you, sir. You...are a sir, correct?'
 
-      gender = STDIN.gets.strip!
+      gender_set = false
 
-      gender = gender =='yes' || gender == 'y' ? 'sir' : 'madam'
+      until gender_set
+        gender = STDIN.gets.strip!
 
-      single_space
+        single_space
 
-      lines_pretty_print "Thank you, #{gender}. Now, let's gather a list of the code repositories you work "\
-                         'with, shall we?'
+        if gender == 'yes' || gender == 'y'
+          gender = 'sir'
+          gender_set = true
+        elsif gender == 'no' || gender == 'n'
+          gender = 'madam'
+          gender_set = true
+        else
+          lines_pretty_print "Very funny, Master #{name}."
+          lines_pretty_print Rainbow('Please input either \'yes\' or \'no\'.').yellow
+        end
+      end
+
+      lines_pretty_print "Yes, of course. My apologies. Please do not take offense, #{gender}. I am, after "\
+                         'all, a simple computer program. Don\'t have eyes, you see. Now, let\'s gather a '\
+                         'list of the code repositories you work with, shall we?'
 
       single_space
 
