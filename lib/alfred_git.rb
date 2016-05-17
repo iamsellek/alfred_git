@@ -98,6 +98,8 @@ module AlfredGit
 
       name = STDIN.gets.strip!
 
+      name = name == '' ? 'Wayne' : name
+
       single_space
 
       lines_pretty_print 'Thank you, sir. You...are a sir, correct?'
