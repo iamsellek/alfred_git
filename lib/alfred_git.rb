@@ -32,7 +32,7 @@ module AlfredGit
 
       case @arguments[0]
       when nil, ''
-        lines_pretty_print Rainbow('I need a command to run, Master Wayne.').red
+        lines_pretty_print Rainbow("I need a command to run, Master #{@name}.").red
 
         abort
       when 'pull'
@@ -44,7 +44,7 @@ module AlfredGit
       when 'checkout'
         if second_argument_missing?
           lines_pretty_print Rainbow('I need a branch name to execute the \'checkout\' command, Master '\
-                                     'Wayne.').red
+                                     "#{@name}.").red
 
           abort
         end
@@ -56,7 +56,7 @@ module AlfredGit
       when 'commit'
         if second_argument_missing?
           lines_pretty_print Rainbow('I need a commit message to execute the \'commit\' command, Master '\
-                                     'Wayne.').red
+                                     "#{@name}.").red
 
           abort
         end
@@ -79,7 +79,7 @@ module AlfredGit
     # All other arguments are deleted before we get here, so this should be just the repo list.
     def repos_string_to_array
       if @arguments[0].nil?|| @arguments[0] == ''
-        lines_pretty_print Rainbow('I need at least one repository to work with, Master Wayne.').red
+        lines_pretty_print Rainbow("I need at least one repository to work with, Master #{@name}.").red
 
         abort
       elsif @arguments[0] == 'all'
