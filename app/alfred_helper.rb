@@ -3,17 +3,25 @@ require 'rainbow'
 
 class AlfredHelper
 
-  def alfred(arguments)
+  def initialize
     set_app_directory
+    config_yaml = YAML.load_file("#{@app_directory}/config/config.yaml")
 
+    config if config_yaml.nil? || !config_yaml
+
+    @repo_locations = config_yaml['repos']
+    @name = config_yaml['name'].nil? ? 'Wayne' : config_yaml['name']
+    @gender = config_yaml['gender'].nil? ? 'sir' : config_yaml['gender']
+  end
+
+  def alfred(arguments)
     @arguments = arguments
-    repo_locations = YAML.load_file("#{@app_directory}/config/repos.yaml")
     command = command_to_git_command
-    repos = repos_string_to_array(repo_locations)
+    repos = repos_string_to_array
 
     repos.each do |repo|
       lines_pretty_print Rainbow("Repo #{repo}:").yellow
-      bash(repo_locations[repo], command)
+      bash(@repo_locations[repo], command)
 
       single_space
     end
@@ -69,16 +77,84 @@ class AlfredHelper
   end
 
   # All other arguments are deleted before we get here, so this should be just the repo list.
-  def repos_string_to_array(repo_locations)
+  def repos_string_to_array
     if @arguments[0].nil?|| @arguments[0] == ''
       lines_pretty_print Rainbow('I need at least one repository to work with, Master Wayne.').red
 
       abort
     elsif @arguments[0] == 'all'
-      return repo_locations.keys
+      return @repo_locations.keys
     else
       return @arguments
     end
+  end
+
+  def config
+    config_file = File.open("#{@app_directory}/config/config.yaml", 'w')
+
+    lines_pretty_print 'Good evening, Master Wayne. Thank you for utilizing my abilities. Please enter your '\
+                       'last name if you\'d like me to address you as something other than Wayne.'
+    lines_pretty_print Rainbow('(Just hit enter to stick with \'Master Wayne\'.)').yellow
+
+    name = STDIN.gets.strip!
+
+    single_space
+
+    lines_pretty_print 'Thank you, sir. You...are a sir, correct?'
+
+    gender = STDIN.gets.strip!
+
+    gender = gender =='yes' || gender == 'y' ? 'sir' : 'madam'
+
+    single_space
+
+    lines_pretty_print "Thank you, #{gender}. Now, let's gather a list of the code repositories you work "\
+                       'with, shall we?'
+
+    single_space
+
+    repos = {}
+    done = false
+    repo_count = 0
+
+    until done do
+      first = repo_count > 0 ? 'next' : 'first'
+
+      lines_pretty_print "What is the 'friendly' name you'd like to give your #{first} repository? This is the "\
+                         'name you will type when sending me commands. If you are done adding them, please '\
+                         'enter \'x211\' as your input instead.'
+
+      repo_name = STDIN.gets.strip!
+
+      if repo_name == 'x211'
+        done = true
+        single_space
+        next
+      end
+
+      single_space
+
+      lines_pretty_print "Thank you, #{gender}. Now, where is that repository? Please paste the full path."
+
+      repo_path = STDIN.gets.strip!
+
+      single_space
+
+      repos[repo_name] = repo_path
+      repo_count += 1
+
+      lines_pretty_print Rainbow("I've added that repository successfully, #{gender}!").green
+
+      single_space
+    end
+
+    YAML.dump({ 'name' => name, 'gender' => gender, 'repos' => repos }, config_file)
+    config_file.close
+
+    lines_pretty_print "Thank you for helping me set things up, Master #{name}. Feel free to run me whenever "\
+                       'you need.'
+
+    abort
   end
 
   def second_argument_missing?
