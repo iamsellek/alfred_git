@@ -40,6 +40,9 @@ you'll send in a few parameters (the exact number of parameters required
 changes based on what git command you need to run - you can't run a `git
 checkout` without a branch name, for instance) separated by spaces; the repos
 you want to work with *always* come last and will also be separated by spaces.
+Want to do all of the repos, but don't want to type them all out? Of course
+you do! Why else would you be using this app? Just run AlfredGit with the word
+'all' as your last parameter.
 
 AlfredGit comes packaged with the most common git commands built in, but also
 allows you to send custom commands! If your first parameter doesn't match
