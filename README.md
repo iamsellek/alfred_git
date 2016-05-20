@@ -47,8 +47,9 @@ you do! Why else would you be using this app? Just run AlfredGit with the word
 AlfredGit comes packaged with the most common git commands built in, but also
 allows you to send custom commands! If your first parameter doesn't match
 any of the built-in commands, the first parameter itself will be the command
-that is run! Simple! Think another command warrants being on this list?
-Email me and I'll consider adding it!
+that is run! Simple! If your custom command has a space in it, wrap it in
+quotes and send it as a string. Think another command warrants being on this
+list? Email me and I'll consider adding it!
 
 And with that, we come to the built-in commands. Here are the AlfredGit commands
 followed by a description of what they run. Most of these should be intuitive.
