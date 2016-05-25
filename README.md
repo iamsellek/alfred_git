@@ -20,36 +20,36 @@ Enter AlfredGit, named after a certain famous billionaire's butler. AlfredGit do
 those stupid menial typing tasks for you. Why? Because you're freaking Batman
 and Batman doesn't have time to sit there cd-ing into 12 different repo
 directories and issuing a `git pull` in every single one of them. He's too
-busy out there punching...uh...bugs and...feature requests. In the face (this
+busy out there punching...uh...bugs and...feature requests in the face (this
 analogy is quickly falling apart). So grab AlfredGit and say goodbye to
 spending 20% of your day typing git commands in 140 different repos like a
 pleb. This, guys. This is the future.
 
 # Installation
 
-I'd recommend holding off on this for right now, as I'm planning on gem-ifying
-this soon enough. Once that's done, an install will be as easy as typing `gem
-install alfred` or something similar. Pretty sure someone already took that
-gem name even though their app doesn't even compare and doesn't deserve the
-moniker.
+An install is as easy as typing `gem install alfred_git` on your command line
+(you need to have ruby installed). At that point, all you need to do to run
+the app is type `alfred_git`.
 
 # Use
 
 I've tried to make the command syntax as intuitive as possible. Essentially,
 you'll send in a few parameters (the exact number of parameters required
 changes based on what git command you need to run - you can't run a `git
-checkout` without a branch name, for instance) separated by spaces; the repos
-you want to work with *always* come last and will also be separated by spaces.
-Want to do all of the repos, but don't want to type them all out? Of course
-you do! Why else would you be using this app? Just run AlfredGit with the word
-'all' as your last parameter.
+checkout` without a branch name, for instance) separated by spaces; the 
+important thing to remember is that repos you want to work with *always* be
+your last/last few parameters and will also be separated by spaces. Want to do
+all of the repos, but don't want to type them all out? Of course you do! Why
+else would you be using this app? Just run AlfredGit with the word 'all' as
+your last parameter. How does AlfredGit know your repos? You set them up when
+you first run the app! After installation, just run the app and it'll run you
+through the set up and explain along the way!
 
-AlfredGit comes packaged with the most common git commands built in, but also
-allows you to send custom commands! If your first parameter doesn't match
-any of the built-in commands, the first parameter itself will be the command
-that is run! Simple! If your custom command has a space in it, wrap it in
-quotes and send it as a string. Think another command warrants being on this
-list? Email me and I'll consider adding it!
+AlfredGit comes packaged with the most common git commands built in. I'm working
+on getting custom commands to work with it as well, so you can send whatever
+command you'd like to however many branches you'd like in one fell swoop! Simple!
+Think another command warrants being on this list? Email me and I'll consider
+adding it!
 
 And with that, we come to the built-in commands. Here are the AlfredGit commands
 followed by a description of what they run. Most of these should be intuitive.
@@ -57,23 +57,28 @@ followed by a description of what they run. Most of these should be intuitive.
 * `pull` - Runs a `git pull`
 * `push` - Runs a `git push`
 * `checkout second_parameter` - runs a `git checkout second_parameter`
-* `commit second_parameter` - Runs a `git commit -m second_parameter`
+* `commit 'second_parameter'` - Runs a `git commit -m second_parameter`
 * `status` - Runs a `git status`
-* `branch` or `branches` - Lists the branches your repos currently have
+* `branch` or `branches` - Lists the branch(es) your repo(s) currently have
                            checked out.
 
 # Quick Example
-Here's a quick example of how it works!
+Here's a quick example of how it works! When you set AlfredGit up, you'll point
+to the locations of all of your repos and give them 'friendly' names with which
+you can quickly refer to them. For the sake of these examples, we'll assume
+that you are completely unimaginative (and really good at remembering numbers)
+and that you've set up 4 repos and named them 'repo_1', 'repo_2', 'repo_3',
+and 'repo_4'.
 
 Want to pull repos 1, 2, and 3? Easy!
 
 `> alfred_git pull repo_1 repo_2 repo_3`
 
-What about pulling everything?
+What about pulling every repo?
 
 `> alfred_git pull all`
 
-How about checking out a branch on multiple repos at once?
+How about checking out a branch named 'branch_name' on multiple repos at once?
 
 `> alfred_git checkout branch_name repo_1 repo_2`
 
