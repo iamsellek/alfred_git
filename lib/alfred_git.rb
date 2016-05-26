@@ -16,6 +16,7 @@ module AlfredGit
 
     def alfred(arguments)
       @arguments = arguments
+      alfred_command
       command = command_to_git_command
       repos = repos_string_to_array
 
@@ -27,14 +28,93 @@ module AlfredGit
       end
     end
 
-    def command_to_git_command
-      command = ''
-
+    def alfred_command
       case @arguments[0]
       when nil, ''
         lines_pretty_print Rainbow("I need a command to run, Master #{@name}.").red
 
         abort
+      when 'list_repo', 'list_repos'
+        lines_pretty_print "Here are your repos and their locations, Master #{@name}:"
+
+        single_space
+
+        list_repos_and_locations
+
+        single_space
+
+        abort
+      when 'add_repo'
+        add_repo
+
+        abort
+      when 'delete_repo'
+        delete_repo
+
+        abort
+      end
+    end
+
+    def list_repos_and_locations
+      @repo_locations.each do |repo, location|
+        lines_pretty_print Rainbow("#{repo}").yellow + ": #{location}"
+      end
+    end
+
+    def add_repo
+      config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
+      config_file = File.open("#{@app_directory}/lib/config.yaml", 'w')
+
+      lines_pretty_print "What is the 'friendly' name you'd like to give your repository? This is the "\
+                         'name you will type when sending me commands.'
+
+      repo_name = STDIN.gets.strip!
+
+      single_space
+
+      lines_pretty_print "Thank you, #{@gender}. Now, where is that repository? Please paste the full path."
+
+      repo_path = STDIN.gets.strip!
+
+      single_space
+
+      config_yaml['repos'][repo_name] = repo_path
+      YAML.dump(config_yaml, config_file)
+
+      lines_pretty_print Rainbow("I've added that repository successfully, #{@gender}!").green
+
+      single_space
+    end
+
+    def delete_repo
+      config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
+      config_file = File.open("#{@app_directory}/lib/config.yaml", 'w')
+
+      lines_pretty_print "What repository would you like to delete from my list of repositories, #{@gender}?"
+
+      repo_name = STDIN.gets.strip!
+
+      single_space
+
+      if config_yaml['repos'].keys.include?(repo_name)
+        config_yaml['repos'].delete(repo_name)
+
+        lines_pretty_print Rainbow("I've deleted that repository successfully, #{@gender}!").green
+      else
+        lines_pretty_print Rainbow("Sorry, #{@gender}, that is not a repository that is currently in my list. "\
+                                   'If you\'d *really* like to delete it, please add it first using the '\
+                                   '\'add_repo\' command.').red
+      end
+
+      YAML.dump(config_yaml, config_file)
+
+      single_space
+    end
+
+    def command_to_git_command
+      command = ''
+
+      case @arguments[0]
       when 'pull'
         command = 'git pull'
         @arguments.delete_at(0)
