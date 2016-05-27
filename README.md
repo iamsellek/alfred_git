@@ -37,7 +37,7 @@ I've tried to make the command syntax as intuitive as possible. Essentially,
 you'll send in a few parameters (the exact number of parameters required
 changes based on what git command you need to run - you can't run a `git
 checkout` without a branch name, for instance) separated by spaces; the 
-important thing to remember is that repos you want to work with *always* be
+important thing to remember is that repos you want to work with will *always* be
 your last/last few parameters and will also be separated by spaces. Want to do
 all of the repos, but don't want to type them all out? Of course you do! Why
 else would you be using this app? Just run AlfredGit with the word 'all' as
