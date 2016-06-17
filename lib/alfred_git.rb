@@ -1,11 +1,17 @@
 require 'YAML'
 require 'rainbow'
+require 'fileutils'
+
+require_relative './alfred_git/version'
 
 module AlfredGit
   class AlfredGit
+    include AlfredGitVersion
 
     def initialize
       set_app_directory
+      # If there's just one, it's the current version.
+      restore_settings unless Dir.glob("#{@app_directory.chomp('/alfred_git-#{VERSION}')}/alfred_git*").length > 1
       config unless File.exists?("#{@app_directory}/lib/config.yaml")
       config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
 
@@ -249,6 +255,44 @@ module AlfredGit
 
       lines_pretty_print "Thank you for helping me set things up, Master #{name}. Feel free to run me whenever "\
                          'you need.'
+
+      abort
+    end
+
+    # Attempt to restore settings from previous version.
+    def restore_settings
+      lines_pretty_print 'I see that I\'ve been recently updated.'
+      lines_pretty_print Rainbow('Would you like to restore the settings from the previous installation?').yellow
+
+      answered = false
+
+      until answered
+        answer = STDIN.gets.strip!
+
+        single_space
+
+        if answer == 'yes' || answer == 'y' || answer == 'no' || answer == 'n'
+          answered = true
+        else
+          lines_pretty_print 'You\'re hilarious. Really.'
+          lines_pretty_print Rainbow('Please input either \'yes\' or \'no\'.').yellow
+        end
+      end
+
+      return if answer == 'no' || answer == 'n'
+
+      lines_pretty_print 'One moment, please.'
+
+      single_space
+
+      all_gems = Dir.glob("#{@app_directory.chomp("/alfred_git-#{VERSION}")}/alfred_git*")
+
+      # glob orders things in the array alphabetically, so the second-to-last one in the array is the
+      # most recent version that is not the current version.
+      previous_config_file = "#{all_gems[-2]}/lib/config.yaml"
+      FileUtils.copy_file(previous_config_file, "#{@app_directory}/lib/config.yaml")
+
+      lines_pretty_print 'Done! Please run me again when you\'re ready.'
 
       abort
     end

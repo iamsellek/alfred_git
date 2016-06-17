@@ -2,8 +2,8 @@
 
 require 'alfred_git'
 
-helper = AlfredGit::AlfredGit.new
+alfred = AlfredGit::AlfredGit.new
 
-helper.config if ARGV[0] == 'config'
+alfred.config if ARGV[0] == 'config'
 
-helper.alfred(ARGV)
+alfred.alfred(ARGV)

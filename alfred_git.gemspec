@@ -5,7 +5,7 @@ require 'alfred_git/version'
 
 Gem::Specification.new do |spec|
   spec.name           = 'alfred_git'
-  spec.version        = AlfredGit::VERSION
+  spec.version        = AlfredGitVersion::VERSION
   spec.authors        = ['Chris Sellek']
   spec.email          = ['iamsellek@gmail.com']
 

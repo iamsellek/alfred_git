@@ -1,3 +1,3 @@
-module AlfredGit
-  VERSION = "0.2.0"
+module AlfredGitVersion
+  VERSION = "0.3.0"
 end
