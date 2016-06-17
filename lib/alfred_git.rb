@@ -11,7 +11,7 @@ module AlfredGit
     def initialize
       set_app_directory
       # If there's just one, it's the current version.
-      restore_settings if Dir.glob("#{@app_directory.chomp('/alfred_git-#{VERSION}')}/alfred_git*").length > 1 &&
+      restore_settings if Dir.glob("#{@app_directory.chomp("/alfred_git-#{VERSION}")}/alfred_git*").length > 1 &&
                           !(File.exists?("#{@app_directory}/lib/config.yaml"))
       config unless File.exists?("#{@app_directory}/lib/config.yaml")
       config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
