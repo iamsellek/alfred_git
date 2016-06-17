@@ -45,11 +45,10 @@ your last parameter. How does AlfredGit know your repos? You set them up when
 you first run the app! After installation, just run the app and it'll run you
 through the set up and explain along the way!
 
-AlfredGit comes packaged with the most common git commands built in. I'm working
-on getting custom commands to work with it as well, so you can send whatever
-command you'd like to however many branches you'd like in one fell swoop! Simple!
-Think another command warrants being on this list? Email me and I'll consider
-adding it!
+AlfredGit comes packaged with the most common git commands built in. You can also
+send custom commands, so you can send whatever command you'd like to however many
+branches you'd like in one fell swoop! Simple! Think another command warrants
+being on this list? Email me and I'll consider adding it!
 
 And with that, we come to the built-in commands. Here are the AlfredGit commands
 followed by a description of what they run. Most of these should be intuitive.
@@ -61,6 +60,13 @@ followed by a description of what they run. Most of these should be intuitive.
 * `status` - Runs a `git status`
 * `branch` or `branches` - Lists the branch(es) your repo(s) currently have
                            checked out.
+                           
+To send a custom command to any number of branches, just send it as your first
+parameter. Here's the important part to remember, though: if your custom command
+has a space in it/is longer than one word (say you need to send a `gulp build`
+to several branches), make sure you wrap it in quotes when sending it to
+AlfredGit. Also, for some reason, aliases don't work just yet with AlfredGit.
+I'll be fixing this at some point.
 
 # Quick Example
 Here's a quick example of how it works! When you set AlfredGit up, you'll point
@@ -81,6 +87,15 @@ What about pulling every repo?
 How about checking out a branch named 'branch_name' on multiple repos at once?
 
 `> alfred_git checkout branch_name repo_1 repo_2`
+
+What about those sexy-sounding custom commands you heard about? No problem!
+Just send your command as the first parameter. Just keep in mind what I
+mentioned about commands with a space in them! Wrap those bad boys in quotes!
+So, since this is the examples section, let's say you need to send a `gulp
+build` to repos 2 and 4. Since the command is more than one word/has a space
+in it, here's how you would do it:
+
+`> alfred_git "gulp build" repo_2 repo_4`
 
 See? Intuitive! Simple! Batman!
 
