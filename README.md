@@ -60,6 +60,13 @@ followed by a description of what they run. Most of these should be intuitive.
 * `status` - Runs a `git status`
 * `branch` or `branches` - Lists the branch(es) your repo(s) currently have
                            checked out.
+* `woa` or `wielder_of_anor` - Integrates AlfredGit with
+                               [WielderOfAnor](https://github.com/iamsellek/wielder_of_anor).
+                               This command takes up to two parameters. The
+                               first will always be your commit message. The
+                               second is optional, can only be the number 1 (it
+                               will be ignored if it is anything else), and it
+                               will skip checking for forbidden words.
                            
 To send a custom command to any number of branches, just send it as your first
 parameter. Here's the important part to remember, though: if your custom command
@@ -87,6 +94,13 @@ What about pulling every repo?
 How about checking out a branch named 'branch_name' on multiple repos at once?
 
 `> alfred_git checkout branch_name repo_1 repo_2`
+
+Need to run a commit via [WielderOfAnor](https://github.com/iamsellek/wielder_of_anor)
+on repos 1 and 2 because it's another awesome app that you can't live without?
+Psh of course. Here's how. *The 1 is optional and only used if you want to skip
+the checking for forbidden words.*
+
+`> alfred_git woa "This is a terrible commit message." 1 repo_1 repo_2`
 
 What about those sexy-sounding custom commands you heard about? No problem!
 Just send your command as the first parameter. Just keep in mind what I

@@ -124,10 +124,12 @@ module AlfredGit
       case @arguments[0]
       when 'pull'
         command = 'git pull'
-        @arguments.delete_at(0)
+
+        delete_arguments(1)
       when 'push'
         command = 'git push'
-        @arguments.delete_at(0)
+
+        delete_arguments(1)
       when 'checkout'
         if second_argument_missing?
           lines_pretty_print Rainbow('I need a branch name to execute the \'checkout\' command, Master '\
@@ -138,8 +140,7 @@ module AlfredGit
 
         command = "git checkout #{@arguments[1]}"
 
-        @arguments.delete_at(0)
-        @arguments.delete_at(0)
+        delete_arguments(2)
       when 'commit'
         if second_argument_missing?
           lines_pretty_print Rainbow('I need a commit message to execute the \'commit\' command, Master '\
@@ -149,15 +150,36 @@ module AlfredGit
         end
 
         command = %Q[git commit -m "#{@arguments[1]}"]
+
+        delete_arguments(2)
       when 'status'
         command = 'git status'
-        @arguments.delete_at(0)
+
+        delete_arguments(1)
       when 'branches', 'branch'
         command = 'git rev-parse --abbrev-ref HEAD'
-        @arguments.delete_at(0)
+
+        delete_arguments(1)
+      when 'woa', 'wielder_of_anor'
+        if second_argument_missing?
+          lines_pretty_print Rainbow("I need a commit message to pass to wielder_of_anor, Master #{@name}.").red
+
+          abort
+        end
+
+        if @arguments[2] == '1'
+          command = %Q[wielder_of_anor "#{@arguments[1]}" 1]
+
+          delete_arguments(3)
+        else
+          command = %Q[wielder_of_anor "#{@arguments[1]}"]
+
+          delete_arguments(2)
+        end
       else
         command = @arguments[0] # Allow users to send any command to all repos.
-        @arguments.delete_at(0)
+
+        delete_arguments(1)
       end
 
       command
@@ -300,6 +322,13 @@ module AlfredGit
 
     def second_argument_missing?
       @arguments[1].nil? || @arguments[1] == ''
+    end
+
+    def delete_arguments(number_to_delete)
+      (1..number_to_delete).each do
+        # Deleting the first one each time because the array shifts left when one is deleted.
+        @arguments.delete_at(0)
+      end
     end
 
     def bash(directory, command)
