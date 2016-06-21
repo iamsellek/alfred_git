@@ -41,7 +41,7 @@ module AlfredGit
         lines_pretty_print Rainbow("I need a command to run, Master #{@name}.").red
 
         abort
-      when 'list_repo', 'list_repos'
+      when 'list_repo', 'list_repos', 'listrepo', 'listrepos'
         lines_pretty_print "Here are your repos and their locations, Master #{@name}:"
 
         single_space
@@ -51,11 +51,23 @@ module AlfredGit
         single_space
 
         abort
-      when 'add_repo'
+      when 'add_repo', 'addrepo'
+        if second_argument_missing?
+          lines_pretty_print Rainbow("I need a repo name for the new repo, Master #{@name}.").red
+
+          abort
+        end
+
         add_repo
 
         abort
-      when 'delete_repo'
+      when 'delete_repo', 'deleterepo', 'deletrepo'
+        if second_argument_missing?
+          lines_pretty_print Rainbow("I need a repo name to know which repo I'm deleting, Master #{@name}.").red
+
+          abort
+        end
+
         delete_repo
 
         abort
@@ -69,21 +81,19 @@ module AlfredGit
     end
 
     def add_repo
-      config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
-      config_file = File.open("#{@app_directory}/lib/config.yaml", 'w')
-
-      lines_pretty_print "What is the 'friendly' name you'd like to give your repository? This is the "\
-                         'name you will type when sending me commands.'
-
-      repo_name = STDIN.gets.strip!
+      repo_name = @arguments[1]
 
       single_space
 
-      lines_pretty_print "Thank you, #{@gender}. Now, where is that repository? Please paste the full path."
+      lines_pretty_print "I can add the #{repo_name} repo straight away, #{@gender}. Where is that repository? "\
+                         'Please paste the full path.'
 
       repo_path = STDIN.gets.strip!
 
       single_space
+
+      config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
+      config_file = File.open("#{@app_directory}/lib/config.yaml", 'w')
 
       config_yaml['repos'][repo_name] = repo_path
       YAML.dump(config_yaml, config_file)
@@ -94,14 +104,12 @@ module AlfredGit
     end
 
     def delete_repo
-      config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
-      config_file = File.open("#{@app_directory}/lib/config.yaml", 'w')
-
-      lines_pretty_print "What repository would you like to delete from my list of repositories, #{@gender}?"
-
-      repo_name = STDIN.gets.strip!
+      repo_name = @arguments[1]
 
       single_space
+
+      config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
+      config_file = File.open("#{@app_directory}/lib/config.yaml", 'w')
 
       if config_yaml['repos'].keys.include?(repo_name)
         config_yaml['repos'].delete(repo_name)
@@ -160,14 +168,14 @@ module AlfredGit
         command = 'git rev-parse --abbrev-ref HEAD'
 
         delete_arguments(1)
-      when 'woa', 'wielder_of_anor'
+      when 'woa', 'wielder_of_anor', 'wielderofanor'
         if second_argument_missing?
           lines_pretty_print Rainbow("I need a commit message to pass to wielder_of_anor, Master #{@name}.").red
 
           abort
         end
 
-        if @arguments[2] == '1'
+        if @arguments[2] && @arguments[2] == '1'
           command = %Q[wielder_of_anor "#{@arguments[1]}" 1]
 
           delete_arguments(3)

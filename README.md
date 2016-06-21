@@ -52,14 +52,24 @@ being on this list? Email me and I'll consider adding it!
 
 And with that, we come to the built-in commands. Here are the AlfredGit commands
 followed by a description of what they run. Most of these should be intuitive.
+Any command with an underscore in it can also be typed without the underscore for
+quicker access because if you're using this app you're clearly lazy and typing
+underscores is hard. So for example, `add_repo` can be typed as `addrepo`.
 
 * `pull` - Runs a `git pull`
 * `push` - Runs a `git push`
-* `checkout second_parameter` - runs a `git checkout second_parameter`
-* `commit 'second_parameter'` - Runs a `git commit -m second_parameter`
+* `checkout second_parameter` - Runs a `git checkout second_parameter`
+* `commit 'second_parameter'` - Runs a `git commit -m 'second_parameter'`
 * `status` - Runs a `git status`
 * `branch` or `branches` - Lists the branch(es) your repo(s) currently have
                            checked out.
+* `list_repo` or `list_repos` - Lists all of your repo names and their locations.
+* `add_repo second_parameter` - Starts the process of adding a new repo by the
+                                name given in the second parameter. The location
+                                of the repo will be asked for and then added to
+                                your list of repos.
+* `delete_repo second_parameter` - Deletes the repo identified by second
+                                   parameter.
 * `woa` or `wielder_of_anor` - Integrates AlfredGit with
                                [WielderOfAnor](https://github.com/iamsellek/wielder_of_anor).
                                This command takes up to two parameters. The
