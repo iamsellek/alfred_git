@@ -1,6 +1,7 @@
 require 'YAML'
 require 'rainbow'
 require 'fileutils'
+require 'find'
 
 require_relative './alfred_git/version'
 
@@ -71,12 +72,23 @@ module AlfredGit
         delete_repo
 
         abort
+      when 'repo_add_directory', 'rad'
+        
+        if second_argument_missing?
+          lines_pretty_print Rainbow("I need a directory path to know which repos to add, Master #{@name}.").red
+        
+          abort
+        end
+
+        repo_add_directory
+
+        abort
       end
     end
 
     def list_repos_and_locations
       @repo_locations.each do |repo, location|
-        lines_pretty_print Rainbow("#{repo}").yellow + ": #{location}"
+        lines_pretty_print Rainbow("#{repo}:").yellow + " #{location}"
       end
     end
 
@@ -110,20 +122,54 @@ module AlfredGit
 
       config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
       config_file = File.open("#{@app_directory}/lib/config.yaml", 'w')
-
-      if config_yaml['repos'].keys.include?(repo_name)
-        config_yaml['repos'].delete(repo_name)
-
-        lines_pretty_print Rainbow("I've deleted that repository successfully, #{@gender}!").green
+      if repo_name == 'all'
+        config_yaml['repos'] = {}
+        lines_pretty_print Rainbow("I've deleted all repositories successfully, #{@gender}!").green
       else
-        lines_pretty_print Rainbow("Sorry, #{@gender}, that is not a repository that is currently in my list. "\
-                                   'If you\'d *really* like to delete it, please add it first using the '\
-                                   '\'add_repo\' command.').red
+        if config_yaml['repos'].keys.include?(repo_name)
+          config_yaml['repos'].delete(repo_name)
+
+          lines_pretty_print Rainbow("I've deleted that repository successfully, #{@gender}!").green
+        else
+          lines_pretty_print Rainbow("Sorry, #{@gender}, that is not a repository that is currently in my list. "\
+                                     'If you\'d *really* like to delete it, please add it first using the '\
+                                     '\'add_repo\' command.').red
+        end
       end
 
       YAML.dump(config_yaml, config_file)
 
       single_space
+    end
+    def repo_add_directory
+      single_space
+
+      if @arguments[1] == '.'
+        rootDir = Dir.pwd
+      else
+        rootDir = @arguments[1]
+      end
+
+      repo_paths = []
+
+      Find.find(rootDir) do |path|
+        repo_paths << path[0...-5] if path =~ /.*\.git$/
+      end
+
+      config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
+      config_file = File.open("#{@app_directory}/lib/config.yaml", 'w')
+
+      lines_pretty_print Rainbow("I've added the following repositories successfully, #{@gender}").green
+
+      single_space
+
+      for x in repo_paths
+        x.slice! rootDir
+        x[0] = ''
+        config_yaml['repos'][x] = File.join(rootDir,x)
+        lines_pretty_print Rainbow(x + ":").yellow+ rootDir + x
+      end
+      YAML.dump(config_yaml, config_file)
     end
 
     def command_to_git_command
