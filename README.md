@@ -68,8 +68,15 @@ underscores is hard. So for example, `add_repo` can be typed as `addrepo`.
                                 name given in the second parameter. The location
                                 of the repo will be asked for and then added to
                                 your list of repos.
+* `repo_add_directory` or `rad` - Searches all subdirectories of the second parameter
+                                  and automatically adds each to the list of repos. This
+                                  command uses the relative path between the second parameter 
+                                  and the repo as the repo name. The second parameter can be
+                                  the absolute path to the directory or a dot representing the
+                                  current directory.
 * `delete_repo second_parameter` - Deletes the repo identified by second
-                                   parameter.
+                                   parameter. If "all" is supplied, this deletes all 
+                                   repositories.
 * `woa` or `wielder_of_anor` - Integrates AlfredGit with
                                [WielderOfAnor](https://github.com/iamsellek/wielder_of_anor).
                                This command takes up to two parameters. The
