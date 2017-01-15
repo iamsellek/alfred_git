@@ -163,13 +163,24 @@ module AlfredGit
 
       single_space
 
-      for x in repo_paths
-        x.slice! rootDir
-        x[0] = ''
-        config_yaml['repos'][x] = File.join(rootDir,x)
-        lines_pretty_print Rainbow(x + ":").yellow+ rootDir + x
+      repo_paths.each do |path|
+        repo = path.split('/').last
+        location = rootDir
+
+        if config_yaml['repos'][repo] == nil
+          config_yaml['repos'][repo] = path
+          lines_pretty_print Rainbow(repo + ":").yellow + path
+        else
+          altPath = path
+          altPath.slice! rootDir + "/"
+          config_yaml['repos'][altPath] = rootDir + "/" + path
+          lines_pretty_print Rainbow(altPath + ":").yellow + rootDir + "/" + path
+        end
+
       end
+
       YAML.dump(config_yaml, config_file)
+      
     end
 
     def command_to_git_command
