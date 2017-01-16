@@ -1,6 +1,7 @@
 require 'YAML'
 require 'rainbow'
 require 'fileutils'
+require 'find'
 
 require_relative './alfred_git/version'
 
@@ -71,12 +72,23 @@ module AlfredGit
         delete_repo
 
         abort
+      when 'repo_add_directory', 'rad'
+        
+        if second_argument_missing?
+          lines_pretty_print Rainbow("I need a directory path to know which repos to add, Master #{@name}.").red
+        
+          abort
+        end
+
+        repo_add_directory
+
+        abort
       end
     end
 
     def list_repos_and_locations
       @repo_locations.each do |repo, location|
-        lines_pretty_print Rainbow("#{repo}").yellow + ": #{location}"
+        lines_pretty_print Rainbow("#{repo}:").yellow + " #{location}"
       end
     end
 
@@ -110,8 +122,11 @@ module AlfredGit
 
       config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
       config_file = File.open("#{@app_directory}/lib/config.yaml", 'w')
-
-      if config_yaml['repos'].keys.include?(repo_name)
+      
+      if repo_name == 'all'
+        config_yaml['repos'] = {}
+        lines_pretty_print Rainbow("I've deleted all repositories successfully, #{@gender}!").green
+      elsif config_yaml['repos'].keys.include?(repo_name)
         config_yaml['repos'].delete(repo_name)
 
         lines_pretty_print Rainbow("I've deleted that repository successfully, #{@gender}!").green
@@ -124,6 +139,48 @@ module AlfredGit
       YAML.dump(config_yaml, config_file)
 
       single_space
+    end
+    
+    def repo_add_directory
+      single_space
+
+      if @arguments[1] == '.'
+        rootDir = Dir.pwd
+      else
+        rootDir = @arguments[1]
+      end
+
+      repo_paths = []
+
+      Find.find(rootDir) do |path|
+        repo_paths << path[0...-5] if path =~ /.*\.git$/
+      end
+
+      config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
+      config_file = File.open("#{@app_directory}/lib/config.yaml", 'w')
+
+      lines_pretty_print Rainbow("I've added the following repositories successfully, #{@gender}").green
+
+      single_space
+
+      repo_paths.each do |path|
+        repo = path.split('/').last
+        location = rootDir
+
+        if config_yaml['repos'][repo] == nil
+          config_yaml['repos'][repo] = path
+          lines_pretty_print Rainbow(repo + ":").yellow + path
+        else
+          altPath = path
+          altPath.slice! rootDir + "/"
+          config_yaml['repos'][altPath] = rootDir + "/" + path
+          lines_pretty_print Rainbow(altPath + ":").yellow + rootDir + "/" + path
+        end
+
+      end
+
+      YAML.dump(config_yaml, config_file)
+      
     end
 
     def command_to_git_command
