@@ -325,12 +325,12 @@ module AlfredGit
         first = repo_count > 0 ? 'next' : 'first'
 
         lines_pretty_print "What is the 'friendly' name you'd like to give your #{first} repository? This is the "\
-                           'name you will type when sending me commands. If you are done adding them, please '\
-                           'enter \'x211\' as your input instead.'
+                           'name you will type when sending me commands. If you are done adding them, please just hit '\
+                           'enter as your input instead.'
 
         repo_name = STDIN.gets.strip!
 
-        if repo_name == 'x211'
+        if repo_name == ''
           done = true
           single_space
           next
