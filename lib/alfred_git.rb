@@ -122,25 +122,25 @@ module AlfredGit
 
       config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
       config_file = File.open("#{@app_directory}/lib/config.yaml", 'w')
+      
       if repo_name == 'all'
         config_yaml['repos'] = {}
         lines_pretty_print Rainbow("I've deleted all repositories successfully, #{@gender}!").green
-      else
-        if config_yaml['repos'].keys.include?(repo_name)
-          config_yaml['repos'].delete(repo_name)
+      elsif config_yaml['repos'].keys.include?(repo_name)
+        config_yaml['repos'].delete(repo_name)
 
-          lines_pretty_print Rainbow("I've deleted that repository successfully, #{@gender}!").green
-        else
-          lines_pretty_print Rainbow("Sorry, #{@gender}, that is not a repository that is currently in my list. "\
-                                     'If you\'d *really* like to delete it, please add it first using the '\
-                                     '\'add_repo\' command.').red
-        end
+        lines_pretty_print Rainbow("I've deleted that repository successfully, #{@gender}!").green
+      else
+        lines_pretty_print Rainbow("Sorry, #{@gender}, that is not a repository that is currently in my list. "\
+                                   'If you\'d *really* like to delete it, please add it first using the '\
+                                   '\'add_repo\' command.').red
       end
 
       YAML.dump(config_yaml, config_file)
 
       single_space
     end
+    
     def repo_add_directory
       single_space
 
