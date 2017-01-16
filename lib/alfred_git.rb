@@ -2,18 +2,23 @@ require 'YAML'
 require 'rainbow'
 require 'fileutils'
 require 'find'
+require 'iamsellek_cl_helper'
 
 require_relative './alfred_git/version'
 
 module AlfredGit
   class AlfredGit
     include AlfredGitVersion
+    include IamsellekClHelper
 
     def initialize
       set_app_directory
+
       # If there's just one, it's the current version.
-      restore_settings if Dir.glob("#{@app_directory.chomp("/alfred_git-#{VERSION}")}/alfred_git*").length > 1 &&
-                          !(File.exists?("#{@app_directory}/lib/config.yaml"))
+      restore_settings('alfred_git', VERSION) if
+        Dir.glob("#{@app_directory.chomp("/alfred_git-#{VERSION}")}/alfred_git*").length > 1 &&
+        !(File.exists?("#{@app_directory}/lib/config.yaml"))
+
       config unless File.exists?("#{@app_directory}/lib/config.yaml")
       config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
 
@@ -52,8 +57,8 @@ module AlfredGit
         single_space
 
         abort
-      when 'add_repo', 'addrepo'
-        if second_argument_missing?
+      when 'add_repo', 'addrepo', 'ar'
+        if second_argument_missing?(@arguments)
           lines_pretty_print Rainbow("I need a repo name for the new repo, Master #{@name}.").red
 
           abort
@@ -62,8 +67,8 @@ module AlfredGit
         add_repo
 
         abort
-      when 'delete_repo', 'deleterepo', 'deletrepo'
-        if second_argument_missing?
+      when 'delete_repo', 'deleterepo', 'deletrepo', 'dr'
+        if second_argument_missing?(@arguments)
           lines_pretty_print Rainbow("I need a repo name to know which repo I'm deleting, Master #{@name}.").red
 
           abort
@@ -74,7 +79,7 @@ module AlfredGit
         abort
       when 'repo_add_directory', 'rad'
         
-        if second_argument_missing?
+        if second_argument_missing?(@arguments)
           lines_pretty_print Rainbow("I need a directory path to know which repos to add, Master #{@name}.").red
         
           abort
@@ -153,7 +158,18 @@ module AlfredGit
       repo_paths = []
 
       Find.find(rootDir) do |path|
-        repo_paths << path[0...-5] if path =~ /.*\.git$/
+        already_found_repo = false
+        puts path
+
+        repo_paths.each do |repo_path|
+          already_found_repo = path.include?(repo_path)
+        end
+
+        next if already_found_repo
+
+        if path =~ /.*\.git$/ && !already_found_repo
+          repo_paths << path[0...-5]
+        end
       end
 
       config_yaml = YAML.load_file("#{@app_directory}/lib/config.yaml")
@@ -176,11 +192,9 @@ module AlfredGit
           config_yaml['repos'][altPath] = rootDir + "/" + path
           lines_pretty_print Rainbow(altPath + ":").yellow + rootDir + "/" + path
         end
-
       end
 
       YAML.dump(config_yaml, config_file)
-      
     end
 
     def command_to_git_command
@@ -190,13 +204,13 @@ module AlfredGit
       when 'pull'
         command = 'git pull'
 
-        delete_arguments(1)
+        delete_arguments(@arguments, 1)
       when 'push'
         command = 'git push'
 
-        delete_arguments(1)
+        delete_arguments(@arguments, 1)
       when 'checkout'
-        if second_argument_missing?
+        if second_argument_missing?(@arguments)
           lines_pretty_print Rainbow('I need a branch name to execute the \'checkout\' command, Master '\
                                      "#{@name}.").red
 
@@ -205,9 +219,9 @@ module AlfredGit
 
         command = "git checkout #{@arguments[1]}"
 
-        delete_arguments(2)
+        delete_arguments(@arguments, 2)
       when 'commit'
-        if second_argument_missing?
+        if second_argument_missing?(@arguments)
           lines_pretty_print Rainbow('I need a commit message to execute the \'commit\' command, Master '\
                                      "#{@name}.").red
 
@@ -216,17 +230,17 @@ module AlfredGit
 
         command = %Q[git commit -m "#{@arguments[1]}"]
 
-        delete_arguments(2)
+        delete_arguments(@arguments, 2)
       when 'status'
         command = 'git status'
 
-        delete_arguments(1)
+        delete_arguments(@arguments, 1)
       when 'branches', 'branch'
         command = 'git rev-parse --abbrev-ref HEAD'
 
-        delete_arguments(1)
+        delete_arguments(@arguments, 1)
       when 'woa', 'wielder_of_anor', 'wielderofanor'
-        if second_argument_missing?
+        if second_argument_missing?(@arguments)
           lines_pretty_print Rainbow("I need a commit message to pass to wielder_of_anor, Master #{@name}.").red
 
           abort
@@ -235,16 +249,16 @@ module AlfredGit
         if @arguments[2] && @arguments[2] == '1'
           command = %Q[wielder_of_anor "#{@arguments[1]}" 1]
 
-          delete_arguments(3)
+          delete_arguments(@arguments, 3)
         else
           command = %Q[wielder_of_anor "#{@arguments[1]}"]
 
-          delete_arguments(2)
+          delete_arguments(@arguments, 2)
         end
       else
         command = @arguments[0] # Allow users to send any command to all repos.
 
-        delete_arguments(1)
+        delete_arguments(@arguments, 1)
       end
 
       command
@@ -347,83 +361,8 @@ module AlfredGit
       abort
     end
 
-    # Attempt to restore settings from previous version.
-    def restore_settings
-      lines_pretty_print 'I see that you have a previous alfred_git installation on this machine.'
-      lines_pretty_print Rainbow('Would you like to restore its settings?').yellow
-
-      answered = false
-
-      until answered
-        answer = STDIN.gets.strip!
-
-        single_space
-
-        if answer == 'yes' || answer == 'y' || answer == 'no' || answer == 'n'
-          answered = true
-        else
-          lines_pretty_print 'You\'re hilarious. Really.'
-          lines_pretty_print Rainbow('Please input either \'yes\' or \'no\'.').yellow
-        end
-      end
-
-      return if answer == 'no' || answer == 'n'
-
-      lines_pretty_print 'One moment, please.'
-
-      single_space
-
-      all_gems = Dir.glob("#{@app_directory.chomp("/alfred_git-#{VERSION}")}/alfred_git*")
-
-      # glob orders things in the array alphabetically, so the second-to-last one in the array is the
-      # most recent version that is not the current version.
-      previous_config_file = "#{all_gems[-2]}/lib/config.yaml"
-      FileUtils.copy_file(previous_config_file, "#{@app_directory}/lib/config.yaml")
-
-      lines_pretty_print 'Done! Please run me again when you\'re ready.'
-
-      abort
-    end
-
-    def second_argument_missing?
-      @arguments[1].nil? || @arguments[1] == ''
-    end
-
-    def delete_arguments(number_to_delete)
-      (1..number_to_delete).each do
-        # Deleting the first one each time because the array shifts left when one is deleted.
-        @arguments.delete_at(0)
-      end
-    end
-
-    def bash(directory, command)
-      # Dir.chdir ensures all bash commands are being run from the correct
-      # directory.
-      Dir.chdir(directory) { system "#{command}" }
-    end
-
     def set_app_directory
       @app_directory = File.expand_path(File.dirname(__FILE__)).chomp('/lib')
-    end
-
-    def lines_pretty_print(string)
-      lines = string.scan(/\S.{0,70}\S(?=\s|$)|\S+/)
-
-      lines.each { |line| puts line }
-    end
-
-    def single_space
-      puts ''
-    end
-
-    def double_space
-      puts "\n\n"
-    end
-
-    def surround_by_double_space(string)
-      double_space
-      lines_pretty_print(string)
-      double_space
     end
   end
 end
