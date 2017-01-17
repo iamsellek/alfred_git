@@ -19,7 +19,9 @@ Gem::Specification.new do |spec|
   spec.test_files     = []
   spec.require_paths  = ['lib']
 
-  spec.add_dependency 'rainbow'
+  spec.add_dependency 'rainbow', '~>2.1.0'
+  spec.add_dependency 'gemspec'
+  spec.add_dependency 'iamsellek_cl_helper'
 
   spec.add_development_dependency 'bundler', '~> 1.12'
   spec.add_development_dependency 'rake', '~> 10.0'
