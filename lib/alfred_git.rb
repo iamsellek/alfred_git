@@ -1,5 +1,4 @@
 require 'YAML'
-require 'rainbow'
 require 'fileutils'
 require 'find'
 require 'iamsellek_cl_helper'
@@ -47,7 +46,7 @@ module AlfredGit
         lines_pretty_print Rainbow("I need a command to run, Master #{@name}.").red
 
         abort
-      when 'list_repo', 'list_repos', 'listrepo', 'listrepos'
+      when 'list_repo', 'list_repos', 'listrepo', 'listrepos', 'lr'
         lines_pretty_print "Here are your repos and their locations, Master #{@name}:"
 
         single_space
